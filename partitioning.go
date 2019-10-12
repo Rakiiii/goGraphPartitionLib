@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"math/big"
+	"sync"
 
 	bigintlib "github.com/Rakiiii/goBigIntLib"
 	boolmatrixlib "github.com/Rakiiii/goBoolMatrix"
@@ -112,7 +113,7 @@ func AsyncFindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGr
 				//todo:: add func to count parameter and compare matrix
 				subParameterValue, err := CountParameter(graph, subMatrix)
 				if err != nil {
-					Panic(err)
+					panic(err)
 				}
 				if subParameterValue < bestParameterValue {
 					bestMatrix = subMatrix.Copy()
