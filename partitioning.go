@@ -11,7 +11,7 @@ import (
 	graphlib "github.com/Rakiiii/goGraph"
 )
 
-func FindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups int, disbalance float64) (*boolmatrixlib.BoolMatrix, int64, error) {
+func FindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups int, disbalance float64) (Result, error) {
 	var bestParameterValue int64 = math.MaxInt64
 	bestMatrix := new(boolmatrixlib.BoolMatrix)
 
@@ -36,7 +36,7 @@ func FindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups 
 				//todo:: add func to count parameter and compare matrix
 				subParameterValue, err := CountParameter(graph, subMatrix)
 				if err != nil {
-					return nil, bestParameterValue, err
+					return Result{nil, bestParameterValue}, err
 				}
 				if subParameterValue < bestParameterValue {
 					bestMatrix = subMatrix.Copy()
@@ -48,7 +48,7 @@ func FindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups 
 		bigintlib.Inc(start)
 	}
 
-	return bestMatrix, bestParameterValue, nil
+	return Result{bestMatrix, bestParameterValue}, nil
 }
 
 func CountParameter(graph *graphlib.Graph, matrix *boolmatrixlib.BoolMatrix) (int64, error) {
@@ -77,4 +77,52 @@ func CountParameter(graph *graphlib.Graph, matrix *boolmatrixlib.BoolMatrix) (in
 
 func DebugLog(str string) {
 	fmt.Println(str)
+}
+
+type Result struct {
+	matrix *BoolMatrix
+	value  int64
+}
+
+func AsyncFindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups int, disbalance float64, wg *sync.WaitGroup, ch chan Result) {
+	fmt.Println("Starrting new gorutin")
+	defer wg.Done()
+
+	var bestParameterValue int64 = math.MaxInt64
+	bestMatrix := new(boolmatrixlib.BoolMatrix)
+
+	amountOfVertex := graph.AmountOfVertex()
+	flag := true
+
+	subMatrix := new(boolmatrixlib.BoolMatrix)
+	subMatrix.Init(amountOfGroups, amountOfVertex)
+	for start.Cmp(end) < 0 {
+		subMatrix.SetByNumber(start)
+		DebugLog("checking" + start.String())
+
+		if subMatrix.CountTrues() == int64(amountOfVertex) && subMatrix.CheckDisbalance(disbalance) {
+			for i := 0; i < amountOfVertex; i++ {
+				if subMatrix.CountTruesInLine(i) != 1 {
+					flag = false
+					break
+				}
+			}
+
+			if flag {
+				//todo:: add func to count parameter and compare matrix
+				subParameterValue, err := CountParameter(graph, subMatrix)
+				if err != nil {
+					Panic(err)
+				}
+				if subParameterValue < bestParameterValue {
+					bestMatrix = subMatrix.Copy()
+					bestParameterValue = subParameterValue
+				}
+			}
+			//bigintlib.Inc(start)
+		}
+		bigintlib.Inc(start)
+	}
+
+	ch <- Result{bestMatrix, bestParameterValue}
 }
