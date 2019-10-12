@@ -23,7 +23,7 @@ func FindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups 
 	subMatrix.Init(amountOfGroups, amountOfVertex)
 	for start.Cmp(end) < 0 {
 		subMatrix.SetByNumber(start)
-		DebugLog("checking" + start.String())
+		//DebugLog("checking" + start.String())
 
 		if subMatrix.CountTrues() == int64(amountOfVertex) && subMatrix.CheckDisbalance(disbalance) {
 			for i := 0; i < amountOfVertex; i++ {
@@ -40,6 +40,7 @@ func FindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups 
 					return Result{nil, bestParameterValue}, err
 				}
 				if subParameterValue < bestParameterValue {
+					DebugLog("BestResult Changed")
 					bestMatrix = subMatrix.Copy()
 					bestParameterValue = subParameterValue
 				}
@@ -99,7 +100,7 @@ func AsyncFindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGr
 	subMatrix.Init(amountOfGroups, amountOfVertex)
 	for start.Cmp(end) < 0 {
 		subMatrix.SetByNumber(start)
-		DebugLog("checking" + start.String())
+		//DebugLog("checking" + start.String())
 
 		if subMatrix.CountTrues() == int64(amountOfVertex) && subMatrix.CheckDisbalance(disbalance) {
 			for i := 0; i < amountOfVertex; i++ {
@@ -116,6 +117,7 @@ func AsyncFindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGr
 					panic(err)
 				}
 				if subParameterValue < bestParameterValue {
+					DebugLog("BestResult Changed")
 					bestMatrix = subMatrix.Copy()
 					bestParameterValue = subParameterValue
 				}
