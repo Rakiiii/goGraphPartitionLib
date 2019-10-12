@@ -2,6 +2,7 @@ package graphpartitionlib
 
 import (
 	"errors"
+	"fmt"
 	"math"
 	"math/big"
 
@@ -10,7 +11,7 @@ import (
 	graphlib "github.com/Rakiiii/goGraph"
 )
 
-func FindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups int) (*boolmatrixlib.BoolMatrix, int64, error) {
+func FindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups int, disbalance float64) (*boolmatrixlib.BoolMatrix, int64, error) {
 	var bestParameterValue int64 = math.MaxInt64
 	bestMatrix := new(boolmatrixlib.BoolMatrix)
 
@@ -21,8 +22,9 @@ func FindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups 
 	subMatrix.Init(amountOfGroups, amountOfVertex)
 	for start.Cmp(end) < 0 {
 		subMatrix.SetByNumber(start)
+		DebugLog("checking" + start.String())
 
-		if subMatrix.CountTrues() == int64(amountOfVertex) {
+		if subMatrix.CountTrues() == int64(amountOfVertex) && subMatrix.CheckDisbalance(disbalance) {
 			for i := 0; i < amountOfVertex; i++ {
 				if subMatrix.CountTruesInLine(i) != 1 {
 					flag = false
@@ -70,4 +72,8 @@ func CountParameter(graph *graphlib.Graph, matrix *boolmatrixlib.BoolMatrix) (in
 		}
 	}
 	return result, nil
+}
+
+func DebugLog(str string) {
+	fmt.Println(str)
 }
