@@ -43,8 +43,9 @@ func FindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups 
 					bestParameterValue = subParameterValue
 				}
 			}
-			bigintlib.Inc(start)
+			//bigintlib.Inc(start)
 		}
+		bigintlib.Inc(start)
 	}
 
 	return bestMatrix, bestParameterValue, nil
