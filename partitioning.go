@@ -80,7 +80,7 @@ func DebugLog(str string) {
 }
 
 type Result struct {
-	matrix *BoolMatrix
+	matrix *boolmatrixlib.BoolMatrix
 	value  int64
 }
 
