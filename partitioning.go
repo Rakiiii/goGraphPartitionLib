@@ -81,8 +81,8 @@ func DebugLog(str string) {
 }
 
 type Result struct {
-	matrix *boolmatrixlib.BoolMatrix
-	value  int64
+	Matrix *boolmatrixlib.BoolMatrix
+	Value  int64
 }
 
 func AsyncFindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups int, disbalance float64, wg *sync.WaitGroup, ch chan Result) {
