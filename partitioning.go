@@ -86,7 +86,7 @@ type Result struct {
 	Value  int64
 }
 
-func AsyncFindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups int, disbalance float64, wg *sync.WaitGroup, ch chan Result) {
+func AsyncFindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups int, disbalance float64, wg *sync.WaitGroup, ch *chan Result) {
 	fmt.Println("Starrting new gorutin")
 	defer wg.Done()
 
@@ -132,5 +132,5 @@ func AsyncFindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGr
 		fmt.Println(err)
 		return
 	}
-	ch <- res
+	*ch <- res
 }
