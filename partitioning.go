@@ -3,7 +3,6 @@ package graphpartitionlib
 import (
 	"errors"
 	"fmt"
-	"math"
 	"math/big"
 	"sync"
 
@@ -13,7 +12,7 @@ import (
 )
 
 func FindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups int, disbalance float64) (Result, error) {
-	var bestParameterValue int64 = math.MaxInt64
+	var bestParameterValue int64 = int64(-1)
 	bestMatrix := new(boolmatrixlib.BoolMatrix)
 
 	amountOfVertex := graph.AmountOfVertex()
@@ -21,11 +20,13 @@ func FindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups 
 
 	subMatrix := new(boolmatrixlib.BoolMatrix)
 	subMatrix.Init(amountOfGroups, amountOfVertex)
+
 	for start.Cmp(end) < 0 {
+		flag = true
 		subMatrix.SetByNumber(start)
-		//DebugLog("checking" + start.String())
 
 		if subMatrix.CountTrues() == int64(amountOfVertex) && subMatrix.CheckDisbalance(disbalance) {
+			DebugLog("checking" + start.String())
 			for i := 0; i < amountOfVertex; i++ {
 				if subMatrix.CountTruesInLine(i) != 1 {
 					flag = false
@@ -34,18 +35,17 @@ func FindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups 
 			}
 
 			if flag {
-				//todo:: add func to count parameter and compare matrix
 				subParameterValue, err := CountParameter(graph, subMatrix)
 				if err != nil {
 					return Result{nil, bestParameterValue}, err
 				}
-				if subParameterValue < bestParameterValue {
-					DebugLog("BestResult Changed")
+				if (int64(graph.AmountOfEdges())-subParameterValue/2) < (int64(graph.AmountOfEdges())-bestParameterValue/2) || bestParameterValue == -1 {
+					//DebugLog("BestResult Changed")
+					fmt.Println("BestResult CHanged")
 					bestMatrix = subMatrix.Copy()
 					bestParameterValue = subParameterValue
 				}
 			}
-			//bigintlib.Inc(start)
 		}
 		bigintlib.Inc(start)
 	}
@@ -78,7 +78,7 @@ func CountParameter(graph *graphlib.Graph, matrix *boolmatrixlib.BoolMatrix) (in
 }
 
 func DebugLog(str string) {
-	fmt.Println(str)
+	//fmt.Println(str)
 }
 
 type Result struct {
@@ -90,7 +90,7 @@ func AsyncFindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGr
 	fmt.Println("Starrting new gorutin")
 	defer wg.Done()
 
-	var bestParameterValue int64 = math.MaxInt64
+	/*var bestParameterValue int64 = math.MaxInt64
 	bestMatrix := new(boolmatrixlib.BoolMatrix)
 
 	amountOfVertex := graph.AmountOfVertex()
@@ -116,7 +116,7 @@ func AsyncFindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGr
 				if err != nil {
 					panic(err)
 				}
-				if subParameterValue < bestParameterValue {
+				if (int64(graph.AmountOfEdges())-subParameterValue/2) < (int64(graph.AmountOfEdges())-bestParameterValue/2) || bestParameterValue == 0 {
 					DebugLog("BestResult Changed")
 					bestMatrix = subMatrix.Copy()
 					bestParameterValue = subParameterValue
@@ -125,7 +125,12 @@ func AsyncFindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGr
 			//bigintlib.Inc(start)
 		}
 		bigintlib.Inc(start)
-	}
+	}*/
 
-	ch <- Result{bestMatrix, bestParameterValue}
+	res, err := FindBestPartion(graph, start, end, amountOfGroups, disbalance)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	ch <- res
 }
