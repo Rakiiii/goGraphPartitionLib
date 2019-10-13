@@ -39,11 +39,11 @@ func FindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups 
 				if err != nil {
 					return Result{nil, bestParameterValue}, err
 				}
-				if (int64(graph.AmountOfEdges())-subParameterValue/2) < (int64(graph.AmountOfEdges())-bestParameterValue/2) || bestParameterValue == -1 {
+				if (int64(graph.AmountOfEdges())-subParameterValue/2) < bestParameterValue || bestParameterValue == -1 {
 					//DebugLog("BestResult Changed")
 					fmt.Println("BestResult CHanged")
 					bestMatrix = subMatrix.Copy()
-					bestParameterValue = subParameterValue
+					bestParameterValue = (int64(graph.AmountOfEdges()) - subParameterValue/2)
 				}
 			}
 		}
