@@ -3,6 +3,7 @@ package graphpartitionlib
 import (
 	"errors"
 	"fmt"
+	"log"
 	"math/big"
 	"sync"
 
@@ -44,6 +45,9 @@ func FindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups 
 					fmt.Println("BestResult CHanged")
 					bestMatrix = subMatrix.Copy()
 					bestParameterValue = (int64(graph.AmountOfEdges()) - subParameterValue/2)
+
+					//debug
+					log.Println("bigInt:", start.String())
 				}
 			}
 		}
@@ -86,7 +90,7 @@ type Result struct {
 	Value  int64
 }
 
-func AsyncFindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups int, disbalance float64, wg *sync.WaitGroup, ch chan Result) {
+func AsyncFindBestPartion(graph *graphlib.Graph, start, end string, amountOfGroups int, disbalance float64, wg *sync.WaitGroup, ch chan Result) {
 	fmt.Println("Starrting new gorutin")
 	defer wg.Done()
 
@@ -127,7 +131,11 @@ func AsyncFindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGr
 		bigintlib.Inc(start)
 	}*/
 
-	res, err := FindBestPartion(graph, start, end, amountOfGroups, disbalance)
+	newStart, _ := big.NewInt(0).SetString(start, 0)
+	newEnd, _ := big.NewInt(0).SetString(end, 0)
+
+	res, err := FindBestPartion(graph, newStart, newEnd, amountOfGroups, disbalance)
+	log.Println("value:", res.Value)
 	if err != nil {
 		fmt.Println(err)
 		return
