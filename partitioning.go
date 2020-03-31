@@ -58,7 +58,7 @@ func FindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups 
 }
 
 //CountParameter returns parameter of @graph parted as @matrix 
-func CountParameter(graph *graphlib.Graph, matrix *boolmatrixlib.IBoolMatrix) (int64, error) {
+func CountParameter(graph *graphlib.Graph, matrix boolmatrixlib.IBoolMatrix) (int64, error) {
 	result := int64(0)
 	amV := graph.AmountOfVertex()
 
