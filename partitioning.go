@@ -11,6 +11,7 @@ import (
 	graphlib "github.com/Rakiiii/goGraph"
 )
 
+//FindBestPartition function finds @graph optimal partition by bruteforce algorithm in range @start to @end in @amountOfGroups amount of groupse with @disbalance disbalance 
 func FindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups int, disbalance float64) (Result, error) {
 	var bestParameterValue int64 = int64(-1)
 	bestMatrix := new(boolmatrixlib.BoolMatrix)
@@ -56,7 +57,8 @@ func FindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups 
 	return Result{bestMatrix, bestParameterValue}, nil
 }
 
-func CountParameter(graph *graphlib.Graph, matrix *boolmatrixlib.BoolMatrix) (int64, error) {
+//CountParameter returns parameter of @graph parted as @matrix 
+func CountParameter(graph *graphlib.Graph, matrix *boolmatrixlib.IBoolMatrix) (int64, error) {
 	result := int64(0)
 	amV := graph.AmountOfVertex()
 
@@ -80,56 +82,18 @@ func CountParameter(graph *graphlib.Graph, matrix *boolmatrixlib.BoolMatrix) (in
 	return result, nil
 }
 
-func DebugLog(str string) {
-	//fmt.Println(str)
-}
-
+//Result struct represent of graph partition
 type Result struct {
 	Matrix *boolmatrixlib.BoolMatrix
 	Value  int64
 }
 
+//AsyncFindBestPartion function finds @graph optimal partition by bruteforce algorithm in range @start to @end in @amountOfGroups amount of groupse with
+//@disbalance disbalance can work assync returns res to @ch
 func AsyncFindBestPartion(graph *graphlib.Graph, start, end string, amountOfGroups int, disbalance float64, wg *sync.WaitGroup, ch chan Result) {
 	fmt.Println("Starrting new gorutin")
 	defer wg.Done()
-
-	/*var bestParameterValue int64 = math.MaxInt64
-	bestMatrix := new(boolmatrixlib.BoolMatrix)
-
-	amountOfVertex := graph.AmountOfVertex()
-	flag := true
-
-	subMatrix := new(boolmatrixlib.BoolMatrix)
-	subMatrix.Init(amountOfGroups, amountOfVertex)
-	for start.Cmp(end) < 0 {
-		subMatrix.SetByNumber(start)
-		//DebugLog("checking" + start.String())
-
-		if subMatrix.CountTrues() == int64(amountOfVertex) && subMatrix.CheckDisbalance(disbalance) {
-			for i := 0; i < amountOfVertex; i++ {
-				if subMatrix.CountTruesInLine(i) != 1 {
-					flag = false
-					break
-				}
-			}
-
-			if flag {
-				//todo:: add func to count parameter and compare matrix
-				subParameterValue, err := CountParameter(graph, subMatrix)
-				if err != nil {
-					panic(err)
-				}
-				if (int64(graph.AmountOfEdges())-subParameterValue/2) < (int64(graph.AmountOfEdges())-bestParameterValue/2) || bestParameterValue == 0 {
-					DebugLog("BestResult Changed")
-					bestMatrix = subMatrix.Copy()
-					bestParameterValue = subParameterValue
-				}
-			}
-			//bigintlib.Inc(start)
-		}
-		bigintlib.Inc(start)
-	}*/
-
+	
 	newStart, _ := big.NewInt(0).SetString(start, 0)
 	newEnd, _ := big.NewInt(0).SetString(end, 0)
 

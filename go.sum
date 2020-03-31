@@ -13,6 +13,8 @@ github.com/Rakiiii/goBoolMatrix v0.1.1 h1:C7Yc0bZlyRdUfA81nqku3mJZv7PalP0lMF1Gvq
 github.com/Rakiiii/goBoolMatrix v0.1.1/go.mod h1:pM30IPgEAv/W+/icjlUR0C5y4lU7ck4WnXOpIuOFae8=
 github.com/Rakiiii/goBoolMatrix v0.1.2 h1:Pn3NdEgu8tV9BZ88dej5OokHE5Rj6LxRRnsg2KLMhCo=
 github.com/Rakiiii/goBoolMatrix v0.1.2/go.mod h1:pM30IPgEAv/W+/icjlUR0C5y4lU7ck4WnXOpIuOFae8=
+github.com/Rakiiii/goBoolMatrix v0.4.1 h1:pwEF013dNHqKYaaeQSFV7up7KtreoaSDU2TBHaRUA3k=
+github.com/Rakiiii/goBoolMatrix v0.4.1/go.mod h1:pM30IPgEAv/W+/icjlUR0C5y4lU7ck4WnXOpIuOFae8=
 github.com/Rakiiii/goGraph v0.0.16 h1:w2WaeYQ1PrpH4uOtwaERjgv3UL8lGTppjLlncsQt3KY=
 github.com/Rakiiii/goGraph v0.0.16/go.mod h1:bYAV6bGI3W/Q2pbO8wpCVywSbfjNNbvQ41WEdop3YAI=
 github.com/Rakiiii/goGraph v0.1.0 h1:gnyzVXZXuKxGsy7MBOdoWoV1NC0P6xx8FHrbSk4rA6o=
