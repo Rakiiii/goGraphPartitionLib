@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/big"
 	"sync"
+	"log"
 
 	bigintlib "github.com/Rakiiii/goBigIntLib"
 	boolmatrixlib "github.com/Rakiiii/goBoolMatrix"
@@ -14,23 +15,29 @@ import (
 //FindBestPartition function finds @graph optimal partition by bruteforce algorithm in range @start to @end in @amountOfGroups amount of groupse with @disbalance disbalance 
 func FindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups int, disbalance float64) (Result, error) {
 	var bestParameterValue int64 = int64(-1)
-	bestMatrix := new(boolmatrixlib.BoolMatrix)
+	bestMatrix := new(boolmatrixlib.BoolMatrixLinear)
 
 	amountOfVertex := graph.AmountOfVertex()
 	flag := true
 
-	subMatrix := new(boolmatrixlib.BoolMatrix)
+	subMatrix := new(boolmatrixlib.BoolMatrixLinear)
 	subMatrix.Init(amountOfGroups, amountOfVertex)
 
 	for start.Cmp(end) < 0 {
 		flag = true
 		subMatrix.SetByNumber(start)
 
+		/*if start.Cmp(big.NewInt(698709)) == 0{
+			//log.Println("trues:",subMatrix.CountTrues()," disb is:",subMatrix.CheckDisbalance(disbalance))
+			subMatrix.Print()
+		}*/
 		if subMatrix.CountTrues() == int64(amountOfVertex) && subMatrix.CheckDisbalance(disbalance) {
-			DebugLog("checking" + start.String())
+			log.Println("checking ",start.String())
 			for i := 0; i < amountOfVertex; i++ {
 				if subMatrix.CountTruesInLine(i) != 1 {
 					flag = false
+					//log.Println("Wrong trueth in line:",subMatrix.CountTruesInLine(i)," line number:",i+1)
+					//subMatrix.Print()
 					break
 				}
 			}
@@ -42,7 +49,7 @@ func FindBestPartion(graph *graphlib.Graph, start, end *big.Int, amountOfGroups 
 				}
 				if (int64(graph.AmountOfEdges())-subParameterValue/2) < bestParameterValue || bestParameterValue == -1 {
 					//DebugLog("BestResult Changed")
-					fmt.Println("BestResult CHanged")
+					log.Println("BestResult CHanged")
 					bestMatrix = subMatrix.Copy()
 					bestParameterValue = (int64(graph.AmountOfEdges()) - subParameterValue/2)
 
@@ -72,7 +79,8 @@ func CountParameter(graph *graphlib.Graph, matrix boolmatrixlib.IBoolMatrix) (in
 			if matrix.GetBool(i, j) {
 				edges := graph.GetEdges(i)
 				for _, edge := range edges {
-					if matrix.GetBool(edge, j) {
+					if matrix.GetBool(edge, j) && i != edge {
+						//log.Println("edge is:",i,"|",edge)
 						result++
 					}
 				}
@@ -84,14 +92,14 @@ func CountParameter(graph *graphlib.Graph, matrix boolmatrixlib.IBoolMatrix) (in
 
 //Result struct represent of graph partition
 type Result struct {
-	Matrix *boolmatrixlib.BoolMatrix
+	Matrix boolmatrixlib.IBoolMatrix
 	Value  int64
 }
 
 //AsyncFindBestPartion function finds @graph optimal partition by bruteforce algorithm in range @start to @end in @amountOfGroups amount of groupse with
 //@disbalance disbalance can work assync returns res to @ch
 func AsyncFindBestPartion(graph *graphlib.Graph, start, end string, amountOfGroups int, disbalance float64, wg *sync.WaitGroup, ch chan Result) {
-	fmt.Println("Starrting new gorutin")
+	log.Println("Starrting new gorutin")
 	defer wg.Done()
 	
 	newStart, _ := big.NewInt(0).SetString(start, 0)

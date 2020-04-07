@@ -13,9 +13,13 @@ import (
 	graphlib "github.com/Rakiiii/goGraph"
 )
 
+var testGraph1 string = "testGraph1"
+var testGraph2 string = "graph"
+
 func TestFindBestPartition(t *testing.T) {
+	fmt.Println("Start TestFindBestPartition")
 	var parser = new(graphlib.Parser)
-	var g, err = parser.ParseUnweightedUndirectedGraphFromFile("testGraph1")
+	var g, err = parser.ParseUnweightedUndirectedGraphFromFile(testGraph2)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -56,7 +60,11 @@ func TestFindBestPartition(t *testing.T) {
 			result.Matrix.Print()
 		}
 	} else {
-		fmt.Println(result.Value)
+		fmt.Println("end result",result.Value," end matrix:")
+		result.Matrix.Print()
+		sub,_ := CountParameter(g, result.Matrix)
+		fmt.Println("counted parameter:",sub," amount of edges:",g.AmountOfEdges())
+		fmt.Println("TestFindBestPartition=[ok]")
 	}
 
 	//result.Matrix.Print()
@@ -65,16 +73,17 @@ func TestFindBestPartition(t *testing.T) {
 }
 
 func TestCountParameter(t *testing.T) {
+	fmt.Println("Start TestCountParamete")
 	var parser = new(graphlib.Parser)
-	var g, err = parser.ParseUnweightedUndirectedGraphFromFile("testGraph1")
+	var g, err = parser.ParseUnweightedUndirectedGraphFromFile(testGraph2)
 	if err != nil {
 		fmt.Println("ERORRE", err)
 		return
 	}
 
 	var b boolmatrixlib.BoolMatrix
-	b.Init(2, 5)
-	b.SetByNumber(big.NewInt(int64(681)))
+	b.Init(2, 10)
+	b.SetByNumber(big.NewInt(int64(367209)))
 
 	/*fmt.Println("Vertex:", g.AmountOfVertex())
 	for i := 0; i < g.AmountOfVertex(); i++ {
@@ -91,12 +100,17 @@ func TestCountParameter(t *testing.T) {
 		t.Error("Wrong parameter:", result)
 		b.Print()
 	} else {
-		fmt.Println("Param:", result)
+		if result != 30{
+			t.Error("Wrong param:",result," expected:30")
+		}else{
+			fmt.Println("Param:", result)
+		}
 	}
-
+	fmt.Println("TestCountParamete=[ok]")
 }
 
 func TestAssync(t *testing.T) {
+	fmt.Println("Start TestAssync")
 	var parser = new(graphlib.Parser)
 	var g, err = parser.ParseUnweightedUndirectedGraphFromFile("testGraph1")
 	if err != nil {
@@ -180,6 +194,8 @@ func TestAssync(t *testing.T) {
 			result.Matrix.Print()
 		}
 	} else {
-		fmt.Println(result.Value)
+		fmt.Println("end result:",result.Value," end matrix:")
+		result.Matrix.Print()
+		fmt.Println("TestAssync=[ok]")
 	}
 }
